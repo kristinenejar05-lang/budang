@@ -1,0 +1,869 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>UlamWise - Your Budget, Your Meals</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #fffaf0;
+    color: #333;
+}
+
+header {
+    background: #477a45;
+    color: white;
+    padding: 22px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 28px;
+}
+
+header p {
+    margin-top: 8px;
+}
+
+nav {
+    background: #315b32;
+    padding: 12px;
+    text-align: center;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 8px;
+    font-size: 14px;
+}
+
+section {
+    padding: 25px 18px;
+    margin: 15px auto;
+    max-width: 750px;
+}
+
+.hero {
+    text-align: center;
+    background: #e5f0d9;
+    padding: 45px 20px;
+    border-radius: 15px;
+}
+
+.hero h2 {
+    font-size: 27px;
+    color: #315b32;
+}
+
+.hero p {
+    margin: 15px 0;
+    line-height: 1.6;
+}
+
+h2 {
+    color: #315b32;
+    margin-bottom: 15px;
+}
+
+input, textarea, button {
+    width: 100%;
+    padding: 13px;
+    margin: 8px 0;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+}
+
+button {
+    background: #477a45;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #315b32;
+}
+
+.card {
+    background: white;
+    padding: 18px;
+    margin: 12px 0;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #00000012;
+}
+
+.card h3 {
+    color: #477a45;
+    margin-bottom: 8px;
+}
+
+.result {
+    background: #e5f0d9;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 12px;
+}
+
+footer {
+    background: #315b32;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+ul {
+    padding-left: 22px;
+    line-height: 1.8;
+}
+
+/* LOGIN MODAL */
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+}
+
+.login-box {
+    background: white;
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    border-radius: 15px;
+    text-align: center;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.login-box h2 {
+    color: #315b32;
+    margin-bottom: 10px;
+}
+
+.login-box p {
+    margin: 12px 0;
+}
+
+.google-btn {
+    background: white;
+    color: #333;
+    border: 1px solid #ccc;
+    font-weight: bold;
+}
+
+.google-btn:hover {
+    background: #f2f2f2;
+}
+
+.close-btn {
+    background: #777;
+}
+
+.close-btn:hover {
+    background: #555;
+}
+
+.register-text {
+    color: #477a45;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#userStatus {
+    color: white;
+    margin-top: 10px;
+}
+
+#logoutBtn {
+    display: none;
+    width: auto;
+    padding: 8px 18px;
+}
+
+#loginMessage {
+    color: #315b32;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.hidden {
+    display: none;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🍲 UlamWise</h1>
+    <p>Your Budget, Your Meals</p>
+
+    <p id="userStatus">Not logged in</p>
+
+    <button id="logoutBtn" onclick="logout()">
+        Sign Out
+    </button>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#budget">Budget</a>
+    <a href="#ingredients">Ingredients</a>
+    <a href="#meals">Meals</a>
+    <a href="#shopping">Shopping</a>
+</nav>
+
+<!-- HOME -->
+
+<section class="hero" id="home">
+
+    <h2>Plan Your Meals Wisely!</h2>
+
+    <p>
+        Save money and prepare delicious Filipino meals
+        using the ingredients you already have at home.
+    </p>
+
+    <button onclick="openLogin()">
+        Get Started
+    </button>
+
+</section>
+
+<!-- LOGIN MODAL -->
+
+<div class="modal" id="loginModal">
+
+    <div class="login-box">
+
+        <h2>🍲 Welcome to UlamWise!</h2>
+
+        <p>Sign in to start planning your meals.</p>
+
+        <button class="google-btn" onclick="googleLogin()">
+            🌐 Sign in with Google
+        </button>
+
+        <p>OR</p>
+
+        <div id="loginFields">
+
+            <input type="email"
+            id="email"
+            placeholder="Enter your email">
+
+            <input type="password"
+            id="password"
+            placeholder="Enter your password">
+
+            <button onclick="emailLogin()">
+                Log In
+            </button>
+
+            <button onclick="registerAccount()">
+                Create Account
+            </button>
+
+        </div>
+
+        <p id="loginMessage"></p>
+
+        <button class="close-btn" onclick="closeLogin()">
+            Cancel
+        </button>
+
+    </div>
+
+</div>
+
+<!-- BUDGET -->
+
+<section id="budget">
+
+    <h2>💰 Budget Calculator</h2>
+
+    <p>Enter your available meal budget in pesos.</p>
+
+    <input type="number" id="budgetInput"
+    placeholder="Enter your budget (₱)">
+
+    <input type="number" id="peopleInput"
+    placeholder="Number of people">
+
+    <button onclick="calculateBudget()">
+        Calculate Budget
+    </button>
+
+    <div class="result" id="budgetResult">
+        Your budget result will appear here.
+    </div>
+
+</section>
+
+<!-- INGREDIENTS -->
+
+<section id="ingredients">
+
+    <h2>🥬 My Ingredients</h2>
+
+    <p>Enter the ingredients you have at home.</p>
+
+    <textarea id="ingredientInput"
+    placeholder="Example: Egg, rice, tomato, onion"></textarea>
+
+    <button onclick="saveIngredients()">
+        Save Ingredients
+    </button>
+
+    <div class="result" id="ingredientResult">
+        Your ingredients will appear here.
+    </div>
+
+</section>
+
+<!-- MEALS -->
+
+<section id="meals">
+
+    <h2>🍛 Filipino Meal Suggestions</h2>
+
+    <p>Choose affordable meals based on your budget.</p>
+
+    <button onclick="suggestMeals()">
+        Suggest Meals
+    </button>
+
+    <div id="mealResult"></div>
+
+</section>
+
+<!-- LEFTOVER -->
+
+<section id="leftover">
+
+    <h2>♻️ Leftover Saver</h2>
+
+    <p>Enter your leftover ingredients.</p>
+
+    <input type="text" id="leftoverInput"
+    placeholder="Example: Leftover rice">
+
+    <button onclick="suggestLeftover()">
+        Find Ideas
+    </button>
+
+    <div class="result" id="leftoverResult"></div>
+
+</section>
+
+<!-- SHOPPING -->
+
+<section id="shopping">
+
+    <h2>🛒 Shopping List</h2>
+
+    <p>Add ingredients you still need to buy.</p>
+
+    <input type="text" id="shoppingInput"
+    placeholder="Enter an ingredient">
+
+    <button onclick="addShopping()">
+        Add to List
+    </button>
+
+    <div class="card">
+        <ul id="shoppingList"></ul>
+    </div>
+
+</section>
+
+<!-- ABOUT -->
+
+<section id="about">
+
+    <h2>About UlamWise</h2>
+
+    <p>
+        UlamWise is a website designed to help individuals
+        and families plan affordable daily meals according
+        to their available budget and ingredients.
+
+        Our goal is to reduce food waste, save money,
+        and make meal planning easier.
+    </p>
+
+</section>
+
+<footer>
+
+    <p>© 2026 UlamWise | Your Budget, Your Meals</p>
+
+</footer>
+
+<!-- FIREBASE -->
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script>
+
+// ===================================
+// FIREBASE CONFIGURATION
+// ===================================
+
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    appId: "YOUR_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const auth = firebase.auth();
+
+
+// ===================================
+// LOGIN FUNCTIONS
+// ===================================
+
+function openLogin() {
+    if (auth.currentUser) {
+        document.getElementById("budget").scrollIntoView({
+            behavior: "smooth"
+        });
+        return;
+    }
+
+    document.getElementById("loginModal").style.display = "flex";
+}
+
+function closeLogin() {
+    document.getElementById("loginModal").style.display = "none";
+    document.getElementById("loginMessage").innerText = "";
+}
+
+
+// GOOGLE LOGIN
+
+function googleLogin() {
+
+    const provider = new firebase.auth.GoogleAuthProvider();
+
+    auth.signInWithPopup(provider)
+
+    .then(() => {
+
+        closeLogin();
+
+        document.getElementById("budget").scrollIntoView({
+            behavior: "smooth"
+        });
+
+    })
+
+    .catch((error) => {
+
+        document.getElementById("loginMessage").innerText =
+            error.message;
+
+    });
+
+}
+
+
+// EMAIL LOGIN
+
+function emailLogin() {
+
+    const email = document.getElementById("email").value.trim();
+
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+
+        document.getElementById("loginMessage").innerText =
+            "Please enter your email and password.";
+
+        return;
+    }
+
+    auth.signInWithEmailAndPassword(email, password)
+
+    .then(() => {
+
+        closeLogin();
+
+        document.getElementById("budget").scrollIntoView({
+            behavior: "smooth"
+        });
+
+    })
+
+    .catch((error) => {
+
+        document.getElementById("loginMessage").innerText =
+            error.message;
+
+    });
+
+}
+
+
+// REGISTER ACCOUNT
+
+function registerAccount() {
+
+    const email = document.getElementById("email").value.trim();
+
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+
+        document.getElementById("loginMessage").innerText =
+            "Please enter your email and password.";
+
+        return;
+    }
+
+    if (password.length < 6) {
+
+        document.getElementById("loginMessage").innerText =
+            "Password must be at least 6 characters.";
+
+        return;
+    }
+
+    auth.createUserWithEmailAndPassword(email, password)
+
+    .then(() => {
+
+        closeLogin();
+
+        document.getElementById("budget").scrollIntoView({
+            behavior: "smooth"
+        });
+
+    })
+
+    .catch((error) => {
+
+        document.getElementById("loginMessage").innerText =
+            error.message;
+
+    });
+
+}
+
+
+// CHECK USER LOGIN STATUS
+
+auth.onAuthStateChanged((user) => {
+
+    const status = document.getElementById("userStatus");
+
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    if (user) {
+
+        status.innerText = "Welcome, " +
+            (user.displayName || user.email);
+
+        logoutBtn.style.display = "inline-block";
+
+    } else {
+
+        status.innerText = "Not logged in";
+
+        logoutBtn.style.display = "none";
+
+    }
+
+});
+
+
+// LOGOUT
+
+function logout() {
+
+    auth.signOut()
+
+    .then(() => {
+
+        alert("You have successfully logged out!");
+
+        window.location.href = "#home";
+
+    })
+
+    .catch((error) => {
+
+        alert(error.message);
+
+    });
+
+}
+
+
+// ===================================
+// ULAMWISE FUNCTIONS
+// ===================================
+
+let budget = 0;
+
+let ingredients = [];
+
+const meals = [
+
+    {
+        name: "Egg Fried Rice",
+        cost: 35,
+        items: ["Rice", "Egg", "Garlic", "Onion"]
+    },
+
+    {
+        name: "Ginisang Sardinas",
+        cost: 45,
+        items: ["Sardines", "Tomato", "Onion"]
+    },
+
+    {
+        name: "Tortang Talong",
+        cost: 40,
+        items: ["Eggplant", "Egg", "Salt"]
+    },
+
+    {
+        name: "Ginisang Repolyo",
+        cost: 50,
+        items: ["Cabbage", "Garlic", "Onion"]
+    },
+
+    {
+        name: "Pritong Itlog",
+        cost: 25,
+        items: ["Egg", "Cooking Oil"]
+    }
+
+];
+
+
+// BUDGET CALCULATOR
+
+function calculateBudget() {
+
+    budget = Number(
+        document.getElementById("budgetInput").value
+    );
+
+    let people = Number(
+        document.getElementById("peopleInput").value
+    );
+
+    let result = document.getElementById("budgetResult");
+
+    if (budget <= 0 || people <= 0) {
+
+        result.innerHTML =
+            "Please enter a valid budget and number of people.";
+
+        return;
+    }
+
+    let perPerson = budget / people;
+
+    result.innerHTML =
+
+        "Total Budget: ₱" + budget.toFixed(2) +
+
+        "<br>Number of People: " + people +
+
+        "<br>Budget Per Person: ₱" + perPerson.toFixed(2);
+
+}
+
+
+// SAVE INGREDIENTS
+
+function saveIngredients() {
+
+    let input = document.getElementById("ingredientInput").value;
+
+    if (input.trim() === "") {
+
+        alert("Please enter your ingredients.");
+
+        return;
+    }
+
+    ingredients = input.toLowerCase()
+
+        .split(",")
+
+        .map(item => item.trim())
+
+        .filter(Boolean);
+
+    document.getElementById("ingredientResult").innerHTML =
+
+        "<strong>Your Available Ingredients:</strong><br>" +
+
+        ingredients.join(", ");
+
+}
+
+
+// SUGGEST MEALS
+
+function suggestMeals() {
+
+    let result = document.getElementById("mealResult");
+
+    if (budget <= 0) {
+
+        result.innerHTML =
+            "<p>Please calculate your budget first.</p>";
+
+        return;
+    }
+
+    let affordable = meals.filter(meal =>
+        meal.cost <= budget
+    );
+
+    if (affordable.length === 0) {
+
+        result.innerHTML =
+            "No meal suggestions within your budget.";
+
+        return;
+    }
+
+    result.innerHTML = "";
+
+    affordable.forEach(meal => {
+
+        let available = meal.items.filter(item =>
+            ingredients.includes(item.toLowerCase())
+        );
+
+        let missing = meal.items.filter(item =>
+            !ingredients.includes(item.toLowerCase())
+        );
+
+        result.innerHTML += `
+
+            <div class="card">
+
+                <h3>${meal.name}</h3>
+
+                <p>Estimated Cost: ₱${meal.cost}</p>
+
+                <p>Available Ingredients:
+                ${available.join(", ") || "None listed"}</p>
+
+                <p>Ingredients Still Needed:
+                ${missing.join(", ") || "None"}</p>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+// LEFTOVER SAVER
+
+function suggestLeftover() {
+
+    let input = document.getElementById("leftoverInput")
+
+        .value.toLowerCase().trim();
+
+    let result = document.getElementById("leftoverResult");
+
+    if (input === "") {
+
+        result.innerHTML =
+            "Please enter your leftover food.";
+
+        return;
+    }
+
+    let ideas = {
+
+        "rice": "Make garlic fried rice or egg fried rice.",
+
+        "egg": "Prepare tortang itlog or scrambled egg.",
+
+        "chicken": "Make chicken fried rice or chicken soup.",
+
+        "vegetables": "Prepare a simple vegetable stir-fry.",
+
+        "fish": "Make fish flakes with rice."
+
+    };
+
+    let suggestion = ideas[input] ||
+
+        "Try mixing it with rice or vegetables to create a new meal.";
+
+    result.innerHTML = suggestion;
+
+}
+
+
+// SHOPPING LIST
+
+function addShopping() {
+
+    let input = document.getElementById("shoppingInput");
+
+    let item = input.value.trim();
+
+    if (item === "") {
+
+        alert("Please enter an ingredient.");
+
+        return;
+    }
+
+    let li = document.createElement("li");
+
+    li.textContent = item;
+
+    document.getElementById("shoppingList")
+        .appendChild(li);
+
+    input.value = "";
+
+}
+
+</script>
+
+</body>
+</html>
